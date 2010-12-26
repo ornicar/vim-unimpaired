@@ -10,26 +10,6 @@ let g:loaded_unimpaired = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
-" Next and previous {{{1
-
-function! s:MapNextFamily(map,cmd)
-  let map = '<Plug>unimpaired'.toupper(a:map)
-  let end = ' ".(v:count ? v:count : "")<CR>'
-  execute 'nmap <silent> '.map.'Previous :<C-U>exe "'.a:cmd.'previous'.end
-  execute 'nmap <silent> '.map.'Next     :<C-U>exe "'.a:cmd.'next'.end
-  execute 'nmap <silent> '.map.'First    :<C-U>exe "'.a:cmd.'first'.end
-  execute 'nmap <silent> '.map.'Last     :<C-U>exe "'.a:cmd.'last'.end
-  execute 'nmap <silent> ['.        a:map .' '.map.'Previous'
-  execute 'nmap <silent> ]'.        a:map .' '.map.'Next'
-  execute 'nmap <silent> ['.toupper(a:map).' '.map.'First'
-  execute 'nmap <silent> ]'.toupper(a:map).' '.map.'Last'
-endfunction
-
-call s:MapNextFamily('a','')
-call s:MapNextFamily('b','b')
-call s:MapNextFamily('l','l')
-call s:MapNextFamily('q','c')
-
 function! s:entries(path)
   let path = substitute(a:path,'[\\/]$','','')
   let files = split(glob(path."/.*"),"\n")
@@ -74,8 +54,6 @@ nnoremap <silent> <Plug>unimpairedOPrevious :<C-U>edit `=<SID>FileByOffset(-v:co
 
 nmap ]o <Plug>unimpairedONext
 nmap [o <Plug>unimpairedOPrevious
-
-" }}}1
 
 let &cpo = s:cpo_save
 
