@@ -54,6 +54,8 @@ nnoremap <silent> <Plug>unimpairedOPrevious :<C-U>edit `=<SID>FileByOffset(-v:co
 
 nmap ]o <Plug>unimpairedONext
 nmap [o <Plug>unimpairedOPrevious
+nmap ]b :bnext<cr>
+nmap [b :bprev<cr>
 
 let &cpo = s:cpo_save
 
