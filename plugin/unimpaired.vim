@@ -1,14 +1,13 @@
 " unimpaired.vim - Pairs of handy bracket mappings
-" Maintainer:   Tim Pope <vimNOSPAM@tpope.org>
+" Maintainer:   Tim Pope <http://tpo.pe/>
 " Version:      1.1
+" GetLatestVimScripts: 1590 1 :AutoInstall: unimpaired.vim
 
 if exists("g:loaded_unimpaired") || &cp || v:version < 700
   finish
 endif
 let g:loaded_unimpaired = 1
 
-let s:cpo_save = &cpo
-set cpo&vim
 
 function! s:entries(path)
   let path = substitute(a:path,'[\\/]$','','')
@@ -57,6 +56,4 @@ nmap [o <Plug>unimpairedOPrevious
 nmap ]b :bnext<cr>
 nmap [b :bprev<cr>
 
-let &cpo = s:cpo_save
-
-" vim:set ft=vim ts=8 sw=2 sts=2:
+" vim:set sw=2 sts=2:
