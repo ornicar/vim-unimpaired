@@ -8,6 +8,33 @@ if exists("g:loaded_unimpaired") || &cp || v:version < 700
 endif
 let g:loaded_unimpaired = 1
 
+" Next and previous {{{1
+
+function! s:MapNextFamily(map,cmd)
+  let map = '<Plug>unimpaired'.toupper(a:map)
+  let cmd = '".(v:count ? v:count : "")."'.a:cmd
+  let end = '"<CR>'
+  execute 'nnoremap <silent> '.map.'Previous :<C-U>exe "'.cmd.'previous'.end
+  execute 'nnoremap <silent> '.map.'Next     :<C-U>exe "'.cmd.'next'.end
+  execute 'nnoremap <silent> '.map.'First    :<C-U>exe "'.cmd.'first'.end
+  execute 'nnoremap <silent> '.map.'Last     :<C-U>exe "'.cmd.'last'.end
+  execute 'nmap <silent> ['.        a:map .' '.map.'Previous'
+  execute 'nmap <silent> ]'.        a:map .' '.map.'Next'
+  execute 'nmap <silent> ['.toupper(a:map).' '.map.'First'
+  execute 'nmap <silent> ]'.toupper(a:map).' '.map.'Last'
+  if exists(':'.a:cmd.'nfile')
+    execute 'nnoremap <silent> '.map.'PFile :<C-U>exe "'.cmd.'pfile'.end
+    execute 'nnoremap <silent> '.map.'NFile :<C-U>exe "'.cmd.'nfile'.end
+    execute 'nmap <silent> [<C-'.a:map.'> '.map.'PFile'
+    execute 'nmap <silent> ]<C-'.a:map.'> '.map.'NFile'
+  endif
+endfunction
+
+call s:MapNextFamily('a','')
+call s:MapNextFamily('b','b')
+call s:MapNextFamily('l','l')
+call s:MapNextFamily('q','c')
+call s:MapNextFamily('t','t')
 
 function! s:entries(path)
   let path = substitute(a:path,'[\\/]$','','')
@@ -176,9 +203,7 @@ nnoremap cod :<C-R>=&diff ? 'diffoff' : 'diffthis'<CR><CR>
 call s:option_map('h', 'hlsearch')
 call s:option_map('i', 'ignorecase')
 call s:option_map('l', 'list')
-nnoremap [on :set <C-R>=(exists('+rnu') && &rnu ? 'norelativenumber ' : '')<CR>number<CR>
-nnoremap ]on :set <C-R>=(exists('+rnu') && &rnu ? 'norelativenumber ' : '')<CR>nonumber<CR>
-nnoremap con :set <C-R>=(exists('+rnu') && &rnu ? 'norelativenumber ' : '').<SID>toggle('number')<CR><CR>
+call s:option_map('n', 'number')
 call s:option_map('r', 'relativenumber')
 call s:option_map('s', 'spell')
 call s:option_map('w', 'wrap')
@@ -210,6 +235,28 @@ augroup unimpaired_paste
         \   unlet s:paste |
         \ endif
 augroup END
+
+" }}}1
+" Put {{{1
+
+function! s:putline(how) abort
+  let [body, type] = [getreg(v:register), getregtype(v:register)]
+  call setreg(v:register, body, 'l')
+  exe 'normal! "'.v:register.a:how
+  call setreg(v:register, body, type)
+endfunction
+
+nnoremap <silent> <Plug>unimpairedPutAbove :call <SID>putline('[p')<CR>
+nnoremap <silent> <Plug>unimpairedPutBelow :call <SID>putline(']p')<CR>
+
+nmap [p <Plug>unimpairedPutAbove
+nmap ]p <Plug>unimpairedPutBelow
+nnoremap <silent> >P :call <SID>putline('[p')<CR>>']
+nnoremap <silent> >p :call <SID>putline(']p')<CR>>']
+nnoremap <silent> <P :call <SID>putline('[p')<CR><']
+nnoremap <silent> <p :call <SID>putline(']p')<CR><']
+nnoremap <silent> =P :call <SID>putline('[p')<CR>=']
+nnoremap <silent> =p :call <SID>putline(']p')<CR>=']
 
 " }}}1
 " Encoding and decoding {{{1
